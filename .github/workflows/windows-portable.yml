@@ -2,8 +2,11 @@ name: Windows x64 portable
 
 on:
   push:
+    # The Actions tab only offers "Run workflow" once this file is on the fork's default
+    # branch, so a push of the feature branch itself must start the build.
     branches:
       - master
+      - anydesk-keyboard
     paths-ignore:
       - "docs/**"
       - "README.md"

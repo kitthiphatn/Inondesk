@@ -174,6 +174,13 @@ fn start_auto_update_check_(rx_msg: Receiver<UpdateMsg>) {
 }
 
 fn check_update(manually: bool) -> ResultType<()> {
+    // This fork has no release feed of its own. The stock updater would download the
+    // official RustDesk build and install it over this one, so skip it; merge upstream
+    // and rebuild instead.
+    if crate::is_custom_client() {
+        log::info!("Custom client detected, skipping stock update check.");
+        return Ok(());
+    }
     // On macOS, auto-update is handled by check_update_as_root() in the service process.
     // The shared check_update() path is only used for manual update checks from the GUI.
     #[cfg(target_os = "macos")]

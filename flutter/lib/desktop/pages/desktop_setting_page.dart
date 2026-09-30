@@ -482,7 +482,7 @@ class _GeneralState extends State<_General> {
   Widget other() {
     final incomingOnly = bind.isIncomingOnly();
     final outgoingOnly = bind.isOutgoingOnly();
-    final showAutoUpdate = (isWindows && bind.mainIsInstalled()) ||
+    final showAutoUpdate = (isWindows && bind.mainIsInstalled() && !bind.isCustomClient()) ||
     (isMacOS && bind.mainIsInstalled() && bind.mainIsInstalledDaemon(prompt: false) && !bind.isCustomClient());
     final children = <Widget>[
       if (!isWeb && !incomingOnly)
@@ -2566,6 +2566,14 @@ class _AboutState extends State<_About> {
                   },
                   child: Text(
                     translate('Website'),
+                    style: linkStyle,
+                  ).marginSymmetric(vertical: 4.0)),
+              InkWell(
+                  onTap: () {
+                    launchUrlString('https://github.com/rustdesk/rustdesk');
+                  },
+                  child: Text(
+                    'Based on RustDesk (AGPL-3.0)',
                     style: linkStyle,
                   ).marginSymmetric(vertical: 4.0)),
               Container(

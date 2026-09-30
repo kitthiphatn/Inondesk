@@ -53,6 +53,17 @@ pub type NotifyMessageBox = fn(String, String, String, String) -> dyn Future<Out
 // the executable name of the portable version
 pub const PORTABLE_APPNAME_RUNTIME_ENV_KEY: &str = "RUSTDESK_APPNAME";
 
+/// Brand name of this fork. `apply_brand_app_name` writes it into
+/// `hbb_common::config::APP_NAME` before any config path, IPC name or window
+/// title is derived from the app name (see `load_custom_client`). It is a
+/// compile-time constant on purpose: nothing outside the binary can choose it.
+pub const BRAND_APP_NAME: &str = "Inondesk";
+
+#[inline]
+pub fn apply_brand_app_name() {
+    *hbb_common::config::APP_NAME.write().unwrap() = BRAND_APP_NAME.to_owned();
+}
+
 pub const PLATFORM_WINDOWS: &str = "Windows";
 pub const PLATFORM_LINUX: &str = "Linux";
 pub const PLATFORM_MACOS: &str = "Mac OS";
@@ -2358,6 +2369,7 @@ pub fn rustdesk_interval(i: Interval) -> ThrottledInterval {
 }
 
 pub fn load_custom_client() {
+    apply_brand_app_name();
     #[cfg(debug_assertions)]
     if let Ok(data) = std::fs::read_to_string("./custom.txt") {
         read_custom_client(data.trim());

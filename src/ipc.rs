@@ -970,8 +970,10 @@ async fn handle(data: Data, stream: &mut Connection) {
                         None
                     };
                 } else if name == "hide_cm" {
-                    value = if crate::hbbs_http::sync::is_pro() || crate::common::is_custom_client()
-                    {
+                    // This fork is a renamed stock client, not a signed custom client:
+                    // `hide_cm` keeps stock semantics (Pro server only), so the connection
+                    // manager window stays visible on the controlled side.
+                    value = if crate::hbbs_http::sync::is_pro() {
                         Some(hbb_common::password_security::hide_cm().to_string())
                     } else {
                         None

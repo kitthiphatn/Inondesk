@@ -3177,6 +3177,26 @@ pub fn get_unicode_from_vk(vk: u32) -> Option<u16> {
     }
 }
 
+// HKCU\Keyboard Layout\Toggle: "1" = Left Alt+Shift, "2" = Ctrl+Shift, "3" = not assigned,
+// "4" = Grave accent (`). "Language Hotkey" switches the input language, "Layout Hotkey"
+// switches layouts inside one language, "Hotkey" is the legacy value the control panel keeps
+// in sync with "Language Hotkey". With a single layout installed the hotkey is inert and the
+// key types a normal character.
+pub fn is_grave_language_toggle() -> bool {
+    use winapi::um::winuser::GetKeyboardLayoutList;
+    if unsafe { GetKeyboardLayoutList(0, null_mut()) } < 2 {
+        return false;
+    }
+    let Ok(toggle) = RegKey::predef(HKEY_CURRENT_USER)
+        .open_subkey_with_flags("Keyboard Layout\\Toggle", KEY_READ)
+    else {
+        return false;
+    };
+    let read = |name: &str| toggle.get_value::<String, _>(name).ok();
+    let language = read("Language Hotkey").or_else(|| read("Hotkey"));
+    language.as_deref() == Some("4") || read("Layout Hotkey").as_deref() == Some("4")
+}
+
 pub fn is_process_consent_running() -> ResultType<bool> {
     let output = std::process::Command::new("cmd")
         .args(&["/C", "tasklist | findstr consent.exe"])

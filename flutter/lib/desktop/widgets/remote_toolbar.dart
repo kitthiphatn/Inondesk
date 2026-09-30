@@ -2632,9 +2632,6 @@ class _KeyboardMenu extends StatelessWidget {
         }
 
         var text = translate(mode.menu);
-        if (mode.key == kKeyTranslateMode) {
-          text = '$text beta';
-        }
         list.add(RdoMenuButton<String>(
           child: Text(text),
           value: mode.key,

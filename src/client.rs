@@ -3746,7 +3746,20 @@ impl LoginConfigHandler {
             }
         }
         if config.keyboard_mode.is_empty() {
-            if is_keyboard_mode_supported(
+            // Windows -> Windows: translate mode types what the local layout produces, so the
+            // local language switch decides Thai/English regardless of the peer's layout.
+            #[cfg(target_os = "windows")]
+            let prefer_translate = pi.platform == crate::PLATFORM_WINDOWS
+                && is_keyboard_mode_supported(
+                    &KeyboardMode::Translate,
+                    get_version_number(&pi.version),
+                    &pi.platform,
+                );
+            #[cfg(not(target_os = "windows"))]
+            let prefer_translate = false;
+            if prefer_translate {
+                config.keyboard_mode = KeyboardMode::Translate.to_string();
+            } else if is_keyboard_mode_supported(
                 &KeyboardMode::Map,
                 get_version_number(&pi.version),
                 &pi.platform,

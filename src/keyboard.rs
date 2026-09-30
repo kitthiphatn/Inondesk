@@ -48,6 +48,17 @@ static EXIT_SHORTCUT_KEY_DOWN: AtomicBool = AtomicBool::new(false);
 #[cfg(all(feature = "flutter", any(target_os = "windows", target_os = "macos", target_os = "linux")))]
 static RELATIVE_MOUSE_MODE_ACTIVE: AtomicBool = AtomicBool::new(false);
 
+// Set while the local language-toggle key (grave) is held after its press was left to the
+// local OS, so the release (and OS auto-repeat) stays local too and the peer never receives
+// an orphan key event for it.
+#[cfg(target_os = "windows")]
+static LANG_TOGGLE_KEY_LOCAL: AtomicBool = AtomicBool::new(false);
+
+// Set while `End` is held after Ctrl+Alt+End sent Ctrl+Alt+Del, so the release is swallowed
+// like the press and OS auto-repeat does not resend the request.
+#[cfg(target_os = "windows")]
+static CTRL_ALT_END_DOWN: AtomicBool = AtomicBool::new(false);
+
 /// Set the relative mouse mode state from Flutter.
 /// This is called when entering or exiting relative mouse mode.
 #[cfg(all(feature = "flutter", any(target_os = "windows", target_os = "macos", target_os = "linux")))]
@@ -609,6 +620,70 @@ fn should_block_relative_mouse_shortcut(key: Key, is_press: bool) -> bool {
     false
 }
 
+// Grave (`) is Windows' optional input-language hotkey. In translate and legacy mode the
+// characters come from the local layout, so the toggle must act locally: the key is left to
+// the local OS and never sent to the peer. Any modifier held makes it an ordinary key.
+#[cfg(target_os = "windows")]
+fn should_pass_lang_toggle_key_to_local(event: &Event, key: Key, is_press: bool) -> bool {
+    if key != Key::BackQuote || event.position_code != 0x29 {
+        return false;
+    }
+    if !is_press {
+        return LANG_TOGGLE_KEY_LOCAL.swap(false, Ordering::SeqCst);
+    }
+    if LANG_TOGGLE_KEY_LOCAL.load(Ordering::SeqCst) {
+        return true;
+    }
+    if !KEYBOARD_HOOKED.load(Ordering::SeqCst) {
+        return false;
+    }
+    if is_hot_key_modifiers_down()
+        || rdev::get_modifier(Key::ShiftLeft)
+        || rdev::get_modifier(Key::ShiftRight)
+    {
+        return false;
+    }
+    if !matches!(get_keyboard_mode().as_str(), "translate" | "legacy") {
+        return false;
+    }
+    if !crate::platform::windows::is_grave_language_toggle() {
+        return false;
+    }
+    LANG_TOGGLE_KEY_LOCAL.store(true, Ordering::SeqCst);
+    true
+}
+
+// Ctrl+Alt+Del cannot be captured by a keyboard hook, so Ctrl+Alt+End (the RDP convention)
+// sends the same request as the "Insert Ctrl + Alt + Del" toolbar entry. Both the press and
+// the release of `End` are swallowed so the peer never receives a bare `End`.
+#[cfg(target_os = "windows")]
+fn should_swallow_ctrl_alt_end(key: Key, is_press: bool) -> bool {
+    if key != Key::End {
+        return false;
+    }
+    if !is_press {
+        return CTRL_ALT_END_DOWN.swap(false, Ordering::SeqCst);
+    }
+    if CTRL_ALT_END_DOWN.load(Ordering::SeqCst) {
+        return true;
+    }
+    if !KEYBOARD_HOOKED.load(Ordering::SeqCst) {
+        return false;
+    }
+    let ctrl = rdev::get_modifier(Key::ControlLeft) || rdev::get_modifier(Key::ControlRight);
+    let alt = rdev::get_modifier(Key::Alt) || rdev::get_modifier(Key::AltGr);
+    if !ctrl || !alt {
+        return false;
+    }
+    let peer = get_peer_platform();
+    if peer != crate::PLATFORM_WINDOWS && peer != crate::PLATFORM_LINUX {
+        return false;
+    }
+    CTRL_ALT_END_DOWN.store(true, Ordering::SeqCst);
+    client::ctrl_alt_del();
+    true
+}
+
 fn start_grab_loop() {
     std::env::set_var("KEYBOARD_ONLY", "y");
     #[cfg(any(target_os = "windows", target_os = "macos"))]
@@ -624,6 +699,16 @@ fn start_grab_loop() {
 
             #[cfg(feature = "flutter")]
             if should_block_relative_mouse_shortcut(key, is_press) {
+                return None;
+            }
+
+            #[cfg(target_os = "windows")]
+            if should_pass_lang_toggle_key_to_local(&event, key, is_press) {
+                return Some(event);
+            }
+
+            #[cfg(target_os = "windows")]
+            if should_swallow_ctrl_alt_end(key, is_press) {
                 return None;
             }
 
@@ -1157,7 +1242,7 @@ pub fn legacy_keyboard_mode(event: &Event, mut key_event: KeyEvent) -> Vec<KeyEv
             .and_then(|unicode| unicode.name.clone());
         let mut chr = match &name {
             Some(ref s) => {
-                if s.len() <= 2 {
+                if s.len() <= 2 || (cfg!(target_os = "windows") && s.chars().count() == 1) {
                     // exclude chinese characters
                     s.chars().next().unwrap_or('\0')
                 } else {

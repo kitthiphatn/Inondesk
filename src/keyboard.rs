@@ -672,7 +672,8 @@ fn should_swallow_ctrl_alt_end(key: Key, is_press: bool) -> bool {
     }
     let ctrl = rdev::get_modifier(Key::ControlLeft) || rdev::get_modifier(Key::ControlRight);
     let alt = rdev::get_modifier(Key::Alt) || rdev::get_modifier(Key::AltGr);
-    if !ctrl || !alt {
+    // AltGr arrives as a fake LCtrl (scan code 0x021D) plus RAlt; it is not a Ctrl+Alt chord.
+    if !ctrl || !alt || unsafe { IS_0X021D_DOWN } {
         return false;
     }
     let peer = get_peer_platform();
@@ -1242,7 +1243,13 @@ pub fn legacy_keyboard_mode(event: &Event, mut key_event: KeyEvent) -> Vec<KeyEv
             .and_then(|unicode| unicode.name.clone());
         let mut chr = match &name {
             Some(ref s) => {
-                if s.len() <= 2 || (cfg!(target_os = "windows") && s.chars().count() == 1) {
+                if s.len() <= 2
+                    || (cfg!(target_os = "windows")
+                        && !alt
+                        && !ctrl
+                        && !command
+                        && s.chars().count() == 1)
+                {
                     // exclude chinese characters
                     s.chars().next().unwrap_or('\0')
                 } else {

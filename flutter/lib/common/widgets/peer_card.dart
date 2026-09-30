@@ -402,7 +402,8 @@ class _PeerCardState extends State<_PeerCard>
           Positioned(
             top: 4,
             left: 12,
-            child: Icon(Icons.key, size: 12, color: Colors.white),
+            child: Icon(Icons.key,
+                size: 12, color: avatarTextColor('${peer.id}${peer.platform}')),
           ),
         if (colors.isNotEmpty)
           Positioned(

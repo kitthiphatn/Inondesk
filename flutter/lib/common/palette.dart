@@ -52,6 +52,13 @@ class InonPaletteAndaman {
   static const Color panelDark = Color(0xFF22393A);
   static const Color tabIconMutedDark = Color(0xFF145551);
 
+  // ---- remote toolbar (mode-agnostic: the toolbar paints the same in both modes) ----
+  // toolbarActive: >= 3:1 against the grey inactive square (424242) and the
+  // white toolbar bar, with white icons >= 3:1 on it. toolbarActiveHover is
+  // darker so hover reads by luminance, as in stock.
+  static const Color toolbarActive = Color(0xFF149FA6);
+  static const Color toolbarActiveHover = Color(0xFF0C747A);
+
   // ---- avatars (peer cards, CM avatar); avatarText[i] is the text colour for avatars[i] ----
   static const List<Color> avatars = [
     Color(0xFFFF6F59),
@@ -115,6 +122,13 @@ class InonPaletteMango {
   static const Color panelDark = Color(0xFF3A2D25);
   static const Color tabIconMutedDark = Color(0xFF734122);
 
+  // ---- remote toolbar (mode-agnostic: the toolbar paints the same in both modes) ----
+  // toolbarActive: >= 3:1 against the grey inactive square (424242) and the
+  // white toolbar bar, with white icons >= 3:1 on it. toolbarActiveHover is
+  // darker so hover reads by luminance, as in stock.
+  static const Color toolbarActive = Color(0xFFF06A12);
+  static const Color toolbarActiveHover = Color(0xFFAD4C0D);
+
   // ---- avatars (peer cards, CM avatar); avatarText[i] is the text colour for avatars[i] ----
   static const List<Color> avatars = [
     Color(0xFFF06A12),
@@ -177,6 +191,13 @@ class InonPaletteSilk {
   static const Color titlebarDark = Color(0xFF140D11);
   static const Color panelDark = Color(0xFF3A2731);
   static const Color tabIconMutedDark = Color(0xFF662843);
+
+  // ---- remote toolbar (mode-agnostic: the toolbar paints the same in both modes) ----
+  // toolbarActive: >= 3:1 against the grey inactive square (424242) and the
+  // white toolbar bar, with white icons >= 3:1 on it. toolbarActiveHover is
+  // darker so hover reads by luminance, as in stock.
+  static const Color toolbarActive = Color(0xFFE85F9A);
+  static const Color toolbarActiveHover = Color(0xFFA3195B);
 
   // ---- avatars (peer cards, CM avatar); avatarText[i] is the text colour for avatars[i] ----
   static const List<Color> avatars = [

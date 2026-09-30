@@ -36,7 +36,6 @@ const double _kRadioLeftMargin = 10;
 const double _kListViewBottomMargin = 15;
 const double _kTitleFontSize = 20;
 const double _kContentFontSize = 15;
-const Color _accentColor = MyTheme.accent;
 const String _kSettingPageControllerTag = 'settingPageController';
 const String _kSettingPageTabKeyTag = 'settingPageTabKey';
 
@@ -274,7 +273,7 @@ class _DesktopSettingPageState extends State<DesktopSettingPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: MyTheme.color(context).titlebar,
       body: _buildBlock(
         children: <Widget>[
           SizedBox(
@@ -306,8 +305,8 @@ class _DesktopSettingPageState extends State<DesktopSettingPage>
     final settingsText = Text(
       translate('Settings'),
       textAlign: TextAlign.left,
-      style: const TextStyle(
-        color: _accentColor,
+      style: TextStyle(
+        color: MyTheme.color(context).primary,
         fontSize: _kTitleFontSize,
         fontWeight: FontWeight.w400,
       ),
@@ -370,17 +369,17 @@ class _DesktopSettingPageState extends State<DesktopSettingPage>
             Container(
               width: 4,
               height: _kTabHeight * 0.7,
-              color: selected ? _accentColor : null,
+              color: selected ? MyTheme.color(context).primary : null,
             ),
             Icon(
               selected ? tab.selected : tab.unselected,
-              color: selected ? _accentColor : null,
+              color: selected ? MyTheme.color(context).primary : null,
               size: 20,
             ).marginOnly(left: 13, right: 10),
             Text(
               translate(tab.label),
               style: TextStyle(
-                  color: selected ? _accentColor : null,
+                  color: selected ? MyTheme.color(context).primary : null,
                   fontWeight: FontWeight.w400,
                   fontSize: _kContentFontSize),
             ),
@@ -1529,7 +1528,7 @@ class _SafetyState extends State<_Safety> with AutomaticKeepAliveClientMixin {
                     offstage: !hasWhitelist.value,
                     child: MouseRegion(
                       child: const Icon(Icons.warning_amber_rounded,
-                              color: Color.fromARGB(255, 255, 204, 0))
+                              color: InonSemantic.warningIcon)
                           .marginOnly(right: 5),
                       cursor: SystemMouseCursors.click,
                     ),
@@ -1579,7 +1578,7 @@ class _SafetyState extends State<_Safety> with AutomaticKeepAliveClientMixin {
                   offstage: !hasIdWhitelist.value,
                   child: MouseRegion(
                     child: const Icon(Icons.warning_amber_rounded,
-                            color: Color.fromARGB(255, 255, 204, 0))
+                            color: InonSemantic.warningIcon)
                         .marginOnly(right: 5),
                     cursor: SystemMouseCursors.click,
                   ),
@@ -1820,7 +1819,7 @@ class _NetworkState extends State<_Network> with AutomaticKeepAliveClientMixin {
             );
 
       return ListTile(
-        leading: Icon(icon, color: _accentColor),
+        leading: Icon(icon, color: MyTheme.color(context).primary),
         title: titleWidget,
         enabled: !locked,
         onTap: onTap,
@@ -2416,7 +2415,7 @@ class __PrinterState extends State<_Printer> {
                   child: Text(failedMsg.value,
                           style: DefaultTextStyle.of(context)
                               .style
-                              .copyWith(color: Colors.red))
+                              .copyWith(color: MyTheme.color(context).danger))
                       .marginOnly(bottom: 10.0)),
         ),
         _Button('Install {$appName} Printer', () {
@@ -2577,7 +2576,12 @@ class _AboutState extends State<_About> {
                     style: linkStyle,
                   ).marginSymmetric(vertical: 4.0)),
               Container(
-                decoration: const BoxDecoration(color: Color(0xFF2c8cff)),
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(colors: [
+                      MyTheme.color(context).gradientStart!,
+                      MyTheme.color(context).gradientEnd!,
+                    ]),
+                    borderRadius: BorderRadius.circular(12)),
                 padding:
                     const EdgeInsets.symmetric(vertical: 24, horizontal: 8),
                 child: SelectionArea(
@@ -2589,13 +2593,14 @@ class _AboutState extends State<_About> {
                         children: [
                           Text(
                             'Copyright © ${DateTime.now().toString().substring(0, 4)} Purslane Tech Pte. Ltd.\n$license',
-                            style: const TextStyle(color: Colors.white),
+                            style: TextStyle(
+                                color: MyTheme.color(context).onPrimary),
                           ),
                           Text(
                             translate('Slogan_tip'),
                             style: TextStyle(
                                 fontWeight: FontWeight.w800,
-                                color: Colors.white),
+                                color: MyTheme.color(context).onPrimary),
                           )
                         ],
                       ),
@@ -2899,7 +2904,7 @@ class _WaylandCardState extends State<WaylandCard> {
                 child: Text(_clearShortcutsInhibitorFailedMsg.value,
                         style: DefaultTextStyle.of(context)
                             .style
-                            .copyWith(color: Colors.red))
+                            .copyWith(color: MyTheme.color(context).danger))
                     .marginOnly(bottom: 10.0)),
       ),
       _Button(

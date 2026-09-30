@@ -90,8 +90,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
         child: loadLogo(),
       ),
       buildTip(context),
-      if (!isOutgoingOnly) buildIDBoard(context),
-      if (!isOutgoingOnly) buildPasswordBoard(context),
+      if (!isOutgoingOnly) buildHeroCard(context),
       FutureBuilder<Widget>(
         future: Future.value(
             Obx(() => buildHelpCards(stateGlobal.updateUrl.value))),
@@ -130,7 +129,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
       value: gFFI.serverModel,
       child: Container(
         width: isIncomingOnly ? 280.0 : 200.0,
-        color: Theme.of(context).colorScheme.background,
+        color: MyTheme.color(context).titlebar,
         child: Stack(
           children: [
             Column(
@@ -185,6 +184,28 @@ class _DesktopHomePageState extends State<DesktopHomePage>
     );
   }
 
+  Widget buildHeroCard(BuildContext context) {
+    final c = MyTheme.color(context);
+    return Container(
+      margin: const EdgeInsets.fromLTRB(8, 4, 8, 8),
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [c.gradientStart!, c.gradientEnd!],
+        ),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        children: [
+          buildIDBoard(context),
+          buildPasswordBoard(context),
+        ],
+      ),
+    );
+  }
+
   buildIDBoard(BuildContext context) {
     final model = gFFI.serverModel;
     return Container(
@@ -196,7 +217,8 @@ class _DesktopHomePageState extends State<DesktopHomePage>
         children: [
           Container(
             width: 2,
-            decoration: const BoxDecoration(color: MyTheme.accent),
+            decoration: BoxDecoration(
+                color: MyTheme.color(context).onPrimary!.withOpacity(0.9)),
           ).marginOnly(top: 5),
           Expanded(
             child: Padding(
@@ -214,11 +236,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                           translate("ID"),
                           style: TextStyle(
                               fontSize: 14,
-                              color: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge
-                                  ?.color
-                                  ?.withOpacity(0.5)),
+                              color: MyTheme.color(context).onPrimary),
                         ).marginOnly(top: 5),
                         buildPopupMenu(context)
                       ],
@@ -236,10 +254,12 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                         readOnly: true,
                         decoration: InputDecoration(
                           border: InputBorder.none,
+                          filled: false,
                           contentPadding: EdgeInsets.only(top: 10, bottom: 10),
                         ),
                         style: TextStyle(
                           fontSize: 22,
+                          color: MyTheme.color(context).onPrimary,
                         ),
                       ).workaroundFreezeLinuxMint(),
                     ),
@@ -254,7 +274,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
   }
 
   Widget buildPopupMenu(BuildContext context) {
-    final textColor = Theme.of(context).textTheme.titleLarge?.color;
+    final textColor = MyTheme.color(context).onPrimary;
     RxBool hover = false.obs;
     return InkWell(
       onTap: DesktopTabPage.onAddSetting,
@@ -264,12 +284,12 @@ class _DesktopHomePageState extends State<DesktopHomePage>
           () => CircleAvatar(
             radius: 15,
             backgroundColor: hover.value
-                ? Theme.of(context).scaffoldBackgroundColor
-                : Theme.of(context).colorScheme.background,
+                ? textColor?.withOpacity(0.28)
+                : textColor?.withOpacity(0.14),
             child: Icon(
               Icons.more_vert_outlined,
               size: 20,
-              color: hover.value ? textColor : textColor?.withOpacity(0.5),
+              color: hover.value ? textColor : textColor?.withOpacity(0.8),
             ),
           ),
         ),
@@ -291,7 +311,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
   buildPasswordBoard2(BuildContext context, ServerModel model) {
     RxBool refreshHover = false.obs;
     RxBool editHover = false.obs;
-    final textColor = Theme.of(context).textTheme.titleLarge?.color;
+    final textColor = MyTheme.color(context).onPrimary;
     final showOneTime = model.approveMode != 'click' &&
         model.verificationMethod != kUsePermanentPassword;
     return Container(
@@ -303,7 +323,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
           Container(
             width: 2,
             height: 52,
-            decoration: BoxDecoration(color: MyTheme.accent),
+            decoration: BoxDecoration(color: textColor?.withOpacity(0.9)),
           ),
           Expanded(
             child: Padding(
@@ -313,8 +333,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                 children: [
                   AutoSizeText(
                     translate("One-time Password"),
-                    style: TextStyle(
-                        fontSize: 14, color: textColor?.withOpacity(0.5)),
+                    style: TextStyle(fontSize: 14, color: textColor),
                     maxLines: 1,
                   ),
                   Row(
@@ -333,10 +352,11 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                             readOnly: true,
                             decoration: InputDecoration(
                               border: InputBorder.none,
+                              filled: false,
                               contentPadding:
                                   EdgeInsets.only(top: 14, bottom: 10),
                             ),
-                            style: TextStyle(fontSize: 15),
+                            style: TextStyle(fontSize: 15, color: textColor),
                           ).workaroundFreezeLinuxMint(),
                         ),
                       ),
@@ -351,7 +371,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                                   Icons.refresh,
                                   color: refreshHover.value
                                       ? textColor
-                                      : Color(0xFFDDDDDD),
+                                      : textColor?.withOpacity(0.8),
                                   size: 22,
                                 ))),
                           ),
@@ -366,7 +386,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                                 Icons.edit,
                                 color: editHover.value
                                     ? textColor
-                                    : Color(0xFFDDDDDD),
+                                    : textColor?.withOpacity(0.8),
                                 size: 22,
                               ).marginOnly(right: 8, top: 4),
                             ),
@@ -605,13 +625,14 @@ class _DesktopHomePageState extends State<DesktopHomePage>
           child: Container(
               decoration: BoxDecoration(
                   gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [
-                  Color.fromARGB(255, 226, 66, 188),
-                  Color.fromARGB(255, 244, 114, 124),
-                ],
-              )),
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                      MyTheme.color(context).gradientStart!,
+                      MyTheme.color(context).gradientEnd!,
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(12)),
               padding: EdgeInsets.all(20),
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -622,7 +643,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                                   child: Text(
                                 translate(title),
                                 style: TextStyle(
-                                    color: Colors.white,
+                                    color: MyTheme.color(context).onPrimary,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 15),
                               ).marginOnly(bottom: 6)),
@@ -634,7 +655,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                             translate(content),
                             style: TextStyle(
                                 height: 1.5,
-                                color: Colors.white,
+                                color: MyTheme.color(context).onPrimary,
                                 fontWeight: FontWeight.normal,
                                 fontSize: 13),
                           ).marginOnly(bottom: 20)
@@ -649,8 +670,10 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                                       padding: 8,
                                       isOutline: true,
                                       text: translate(btnText),
-                                      textColor: Colors.white,
-                                      borderColor: Colors.white,
+                                      textColor:
+                                          MyTheme.color(context).onPrimary,
+                                      borderColor:
+                                          MyTheme.color(context).onPrimary,
                                       textSize: 20,
                                       radius: 10,
                                       onTap: onPressed,
@@ -669,7 +692,8 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                                         style: TextStyle(
                                             decoration:
                                                 TextDecoration.underline,
-                                            color: Colors.white,
+                                            color: MyTheme.color(context)
+                                                .onPrimary,
                                             fontSize: 12),
                                       )).marginOnly(top: 6)),
                             ]
@@ -682,7 +706,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
             child: IconButton(
               icon: Icon(
                 Icons.close,
-                color: Colors.white,
+                color: MyTheme.color(context).onPrimary,
                 size: 20,
               ),
               onPressed: closeCard,
@@ -1022,7 +1046,8 @@ void setPasswordDialog({VoidCallback? notEmptyCallback}) async {
             if (statusTip.isNotEmpty)
               Row(
                 children: [
-                  Icon(Icons.info, color: Colors.amber, size: 18)
+                  Icon(Icons.info,
+                          color: MyTheme.color(context).warning, size: 18)
                       .marginOnly(right: 6),
                   Expanded(
                       child: Text(
@@ -1044,8 +1069,8 @@ void setPasswordDialog({VoidCallback? notEmptyCallback}) async {
                           e.name,
                           style: TextStyle(
                               color: checked
-                                  ? const Color(0xFF0A9471)
-                                  : Color.fromARGB(255, 198, 86, 157)),
+                                  ? InonSemantic.chipOkText
+                                  : InonSemantic.chipFailText),
                         ),
                         backgroundColor: checked
                             ? const Color(0xFFD0F7ED)
@@ -1081,7 +1106,8 @@ void setPasswordDialog({VoidCallback? notEmptyCallback}) async {
             close();
           },
           buttonStyle: ButtonStyle(
-              backgroundColor: MaterialStatePropertyAll(Colors.red)),
+              backgroundColor:
+                  MaterialStatePropertyAll(InonSemantic.dangerFill)),
         );
         final okButton = dialogButton(
           "OK",

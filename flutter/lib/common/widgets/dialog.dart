@@ -163,8 +163,8 @@ void changeIdDialog() {
                             e.name,
                             style: TextStyle(
                                 color: checked
-                                    ? const Color(0xFF0A9471)
-                                    : Color.fromARGB(255, 198, 86, 157)),
+                                    ? InonSemantic.chipOkText
+                                    : InonSemantic.chipFailText),
                           ),
                           backgroundColor: checked
                               ? const Color(0xFFD0F7ED)
@@ -879,7 +879,7 @@ class _PasswordWidgetState extends State<PasswordWidget> {
         icon: Icon(
             // Based on passwordVisible state choose the icon
             _passwordVisible ? Icons.visibility : Icons.visibility_off,
-            color: MyTheme.lightTheme.primaryColor),
+            color: MyTheme.color(context).primary),
         onPressed: () {
           // Update the state i.e. toggle the state of passwordVisible variable
           setState(() {
@@ -1405,7 +1405,8 @@ void showRestartRemoteDevice(PeerInfo pi, String id, SessionID sessionId,
   final res = await dialogManager
       .show<bool>((setState, close, context) => CustomAlertDialog(
             title: Row(children: [
-              Icon(Icons.warning_rounded, color: Colors.redAccent, size: 28),
+              Icon(Icons.warning_rounded,
+                  color: MyTheme.color(context).danger, size: 28),
               Flexible(
                   child: Text(translate("Restart remote device"))
                       .paddingOnly(left: 10)),
@@ -1905,7 +1906,7 @@ int? _validateTrackpadSpeed(String text) {
     BotToast.showText(
       text:
           '${translate('Invalid format')}: $kMinTrackpadSpeed-$kMaxTrackpadSpeed',
-      contentColor: Colors.red,
+      contentColor: InonSemantic.dangerFill,
     );
     return null;
   }
@@ -1930,7 +1931,7 @@ void _showTrackpadSpeedSaveError(Object error, StackTrace stackTrace) {
   debugPrintStack(stackTrace: stackTrace);
   BotToast.showText(
     text: translate('Failed'),
-    contentColor: Colors.red,
+    contentColor: InonSemantic.dangerFill,
   );
 }
 
@@ -2476,7 +2477,7 @@ void addPeersToAbDialog(
       showToast(translate('Successful'));
       return true;
     } else {
-      BotToast.showText(text: errMsg, contentColor: Colors.red);
+      BotToast.showText(text: errMsg, contentColor: InonSemantic.dangerFill);
       return false;
     }
   }
@@ -2507,7 +2508,7 @@ void addPeersToAbDialog(
       if (controller.text != gFFI.abModel.translatedName(currentName.value)) {
         BotToast.showText(
             text: 'illegal address book name: ${controller.text}',
-            contentColor: Colors.red);
+            contentColor: InonSemantic.dangerFill);
         return;
       }
       isInProgress.value = true;
@@ -2616,7 +2617,7 @@ void setSharedAbPasswordDialog(String abName, Peer peer) {
                 suffixIcon: IconButton(
                   icon: Icon(
                       passwordVisible ? Icons.visibility : Icons.visibility_off,
-                      color: MyTheme.lightTheme.primaryColor),
+                      color: MyTheme.color(context).primary),
                   onPressed: () {
                     setState(() {
                       passwordVisible = !passwordVisible;
@@ -2627,7 +2628,8 @@ void setSharedAbPasswordDialog(String abName, Peer peer) {
             ).workaroundFreezeLinuxMint(),
             if (!gFFI.abModel.current.isPersonal())
               Row(children: [
-                Icon(Icons.info, color: Colors.amber).marginOnly(right: 4),
+                Icon(Icons.info, color: MyTheme.color(context).warning)
+                    .marginOnly(right: 4),
                 Text(
                   translate('share_warning_tip'),
                   style: TextStyle(fontSize: 12),
@@ -2649,7 +2651,8 @@ void setSharedAbPasswordDialog(String abName, Peer peer) {
             icon: Icon(Icons.delete_outline_rounded),
             onPressed: () => change(''),
             buttonStyle: ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll(Colors.red)),
+                backgroundColor:
+                    MaterialStatePropertyAll(InonSemantic.dangerFill)),
           ),
         Obx(() => dialogButton(
               "OK",

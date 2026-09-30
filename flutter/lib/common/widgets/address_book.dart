@@ -595,7 +595,7 @@ class _AddressBookState extends State<AddressBook> {
                                   passwordVisible
                                       ? Icons.visibility
                                       : Icons.visibility_off,
-                                  color: MyTheme.lightTheme.primaryColor),
+                                  color: MyTheme.color(context).primary),
                               onPressed: () {
                                 setState(() {
                                   passwordVisible = !passwordVisible;
@@ -657,7 +657,8 @@ class _AddressBookState extends State<AddressBook> {
             ),
             if (!gFFI.abModel.current.isPersonal())
               Row(children: [
-                Icon(Icons.info, color: Colors.amber).marginOnly(right: 4),
+                Icon(Icons.info, color: MyTheme.color(context).warning)
+                    .marginOnly(right: 4),
                 Text(
                   translate('share_warning_tip'),
                   style: TextStyle(fontSize: 12),

@@ -29,6 +29,8 @@ import 'package:window_manager/window_manager.dart';
 import 'package:window_size/window_size.dart' as window_size;
 
 import '../consts.dart';
+import 'common/palette.dart';
+export 'common/palette.dart';
 import 'common/widgets/overlay.dart';
 import 'mobile/pages/file_manager_page.dart';
 import 'mobile/pages/remote_page.dart';
@@ -152,6 +154,15 @@ class ColorThemeExtension extends ThemeExtension<ColorThemeExtension> {
     required this.toastBg,
     required this.toastText,
     required this.divider,
+    required this.primary,
+    required this.onPrimary,
+    required this.gradientStart,
+    required this.gradientEnd,
+    required this.accent,
+    required this.titlebar,
+    required this.success,
+    required this.warning,
+    required this.danger,
   });
 
   final Color? border;
@@ -165,9 +176,18 @@ class ColorThemeExtension extends ThemeExtension<ColorThemeExtension> {
   final Color? toastBg;
   final Color? toastText;
   final Color? divider;
+  final Color? primary;
+  final Color? onPrimary;
+  final Color? gradientStart;
+  final Color? gradientEnd;
+  final Color? accent;
+  final Color? titlebar;
+  final Color? success;
+  final Color? warning;
+  final Color? danger;
 
   static final light = ColorThemeExtension(
-    border: Color(0xFFCCCCCC),
+    border: InonPalette.borderLight,
     border2: Color(0xFFBBBBBB),
     border3: Colors.black26,
     highlight: Color(0xFFE5E5E5),
@@ -178,10 +198,19 @@ class ColorThemeExtension extends ThemeExtension<ColorThemeExtension> {
     toastBg: Colors.black.withOpacity(0.6),
     toastText: Colors.white,
     divider: Colors.black38,
+    primary: InonPalette.primaryFillLight,
+    onPrimary: InonPalette.onPrimaryLight,
+    gradientStart: InonPalette.gradientStartLight,
+    gradientEnd: InonPalette.gradientEndLight,
+    accent: InonPalette.accentIndicatorLight,
+    titlebar: InonPalette.titlebarLight,
+    success: InonSemantic.successTextLight,
+    warning: InonSemantic.warningTextLight,
+    danger: InonSemantic.dangerTextLight,
   );
 
   static final dark = ColorThemeExtension(
-    border: Color(0xFF555555),
+    border: InonPalette.borderDark,
     border2: Color(0xFFE5E5E5),
     border3: Colors.white24,
     highlight: Color(0xFF3F3F3F),
@@ -192,6 +221,15 @@ class ColorThemeExtension extends ThemeExtension<ColorThemeExtension> {
     toastBg: Colors.white.withOpacity(0.6),
     toastText: Colors.black,
     divider: Colors.white38,
+    primary: InonPalette.primaryFillDark,
+    onPrimary: InonPalette.onPrimaryDark,
+    gradientStart: InonPalette.gradientStartDark,
+    gradientEnd: InonPalette.gradientEndDark,
+    accent: InonPalette.accentIndicatorDark,
+    titlebar: InonPalette.titlebarDark,
+    success: InonSemantic.successTextDark,
+    warning: InonSemantic.warningTextDark,
+    danger: InonSemantic.dangerTextDark,
   );
 
   @override
@@ -207,6 +245,15 @@ class ColorThemeExtension extends ThemeExtension<ColorThemeExtension> {
     Color? toastBg,
     Color? toastText,
     Color? divider,
+    Color? primary,
+    Color? onPrimary,
+    Color? gradientStart,
+    Color? gradientEnd,
+    Color? accent,
+    Color? titlebar,
+    Color? success,
+    Color? warning,
+    Color? danger,
   }) {
     return ColorThemeExtension(
       border: border ?? this.border,
@@ -220,6 +267,15 @@ class ColorThemeExtension extends ThemeExtension<ColorThemeExtension> {
       toastBg: toastBg ?? this.toastBg,
       toastText: toastText ?? this.toastText,
       divider: divider ?? this.divider,
+      primary: primary ?? this.primary,
+      onPrimary: onPrimary ?? this.onPrimary,
+      gradientStart: gradientStart ?? this.gradientStart,
+      gradientEnd: gradientEnd ?? this.gradientEnd,
+      accent: accent ?? this.accent,
+      titlebar: titlebar ?? this.titlebar,
+      success: success ?? this.success,
+      warning: warning ?? this.warning,
+      danger: danger ?? this.danger,
     );
   }
 
@@ -236,11 +292,20 @@ class ColorThemeExtension extends ThemeExtension<ColorThemeExtension> {
       highlight: Color.lerp(highlight, other.highlight, t),
       drag_indicator: Color.lerp(drag_indicator, other.drag_indicator, t),
       shadow: Color.lerp(shadow, other.shadow, t),
-      errorBannerBg: Color.lerp(shadow, other.errorBannerBg, t),
-      me: Color.lerp(shadow, other.me, t),
-      toastBg: Color.lerp(shadow, other.toastBg, t),
-      toastText: Color.lerp(shadow, other.toastText, t),
-      divider: Color.lerp(shadow, other.divider, t),
+      errorBannerBg: Color.lerp(errorBannerBg, other.errorBannerBg, t),
+      me: Color.lerp(me, other.me, t),
+      toastBg: Color.lerp(toastBg, other.toastBg, t),
+      toastText: Color.lerp(toastText, other.toastText, t),
+      divider: Color.lerp(divider, other.divider, t),
+      primary: Color.lerp(primary, other.primary, t),
+      onPrimary: Color.lerp(onPrimary, other.onPrimary, t),
+      gradientStart: Color.lerp(gradientStart, other.gradientStart, t),
+      gradientEnd: Color.lerp(gradientEnd, other.gradientEnd, t),
+      accent: Color.lerp(accent, other.accent, t),
+      titlebar: Color.lerp(titlebar, other.titlebar, t),
+      success: Color.lerp(success, other.success, t),
+      warning: Color.lerp(warning, other.warning, t),
+      danger: Color.lerp(danger, other.danger, t),
     );
   }
 }
@@ -248,18 +313,18 @@ class ColorThemeExtension extends ThemeExtension<ColorThemeExtension> {
 class MyTheme {
   MyTheme._();
 
-  static const Color grayBg = Color(0xFFEFEFF2);
-  static const Color accent = Color(0xFF0071FF);
-  static const Color accent50 = Color(0x770071FF);
-  static const Color accent80 = Color(0xAA0071FF);
+  static const Color grayBg = InonPalette.panelLight;
+  static const Color accent = InonPalette.primaryFillLight;
+  static const Color accent50 = InonPalette.primaryFillA50Light;
+  static const Color accent80 = InonPalette.primaryFillA80Light;
   static const Color canvasColor = Color(0xFF212121);
-  static const Color border = Color(0xFFCCCCCC);
-  static const Color idColor = Color(0xFF00B6F0);
+  static const Color border = InonPalette.borderLight;
+  static const Color idColor = InonPalette.primaryFillLight;
   static const Color darkGray = Color.fromARGB(255, 148, 148, 148);
   static const Color cmIdColor = Color(0xFF21790B);
   static const Color dark = Colors.black87;
-  static const Color button = Color(0xFF2C8CFF);
-  static const Color hoverBorder = Color(0xFF999999);
+  static const Color button = InonPalette.primaryStrongLight;
+  static const Color hoverBorder = InonPalette.gradientEndRawLight;
 
   // ListTile
   static const ListTileThemeData listTileTheme = ListTileThemeData(
@@ -373,9 +438,9 @@ class MyTheme {
     // https://stackoverflow.com/questions/77537315/after-upgrading-to-flutter-3-16-the-app-bar-background-color-button-size-and
     useMaterial3: false,
     brightness: Brightness.light,
-    hoverColor: Color.fromARGB(255, 224, 224, 224),
-    scaffoldBackgroundColor: Colors.white,
-    dialogBackgroundColor: Colors.white,
+    hoverColor: InonPalette.hoverLight,
+    scaffoldBackgroundColor: InonPalette.pageLight,
+    dialogBackgroundColor: InonPalette.cardLight,
     appBarTheme: AppBarTheme(
       shadowColor: Colors.transparent,
     ),
@@ -385,7 +450,7 @@ class MyTheme {
         borderRadius: BorderRadius.circular(18.0),
         side: BorderSide(
           width: 1,
-          color: grayBg,
+          color: InonPalette.borderLight,
         ),
       ),
     ),
@@ -401,17 +466,18 @@ class MyTheme {
           )
         : null,
     textTheme: const TextTheme(
-        titleLarge: TextStyle(fontSize: 19, color: Colors.black87),
-        titleSmall: TextStyle(fontSize: 14, color: Colors.black87),
-        bodySmall: TextStyle(fontSize: 12, color: Colors.black87, height: 1.25),
+        titleLarge: TextStyle(fontSize: 19, color: InonPalette.textLight),
+        titleSmall: TextStyle(fontSize: 14, color: InonPalette.textLight),
+        bodySmall:
+            TextStyle(fontSize: 12, color: InonPalette.textLight, height: 1.25),
         bodyMedium:
-            TextStyle(fontSize: 14, color: Colors.black87, height: 1.25),
+            TextStyle(fontSize: 14, color: InonPalette.textLight, height: 1.25),
         labelLarge: TextStyle(fontSize: 16.0, color: MyTheme.accent80)),
-    cardColor: grayBg,
-    hintColor: Color(0xFFAAAAAA),
+    cardColor: InonPalette.cardLight,
+    hintColor: InonPalette.mutedStrongLight,
     visualDensity: VisualDensity.adaptivePlatformDensity,
     tabBarTheme: const TabBarTheme(
-      labelColor: Colors.black87,
+      labelColor: InonPalette.textLight,
     ),
     tooltipTheme: tooltipTheme(),
     splashColor: (isDesktop || isWebDesktop) ? Colors.transparent : null,
@@ -438,7 +504,7 @@ class MyTheme {
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
         backgroundColor: grayBg,
-        foregroundColor: Colors.black87,
+        foregroundColor: InonPalette.textLight,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),
@@ -452,13 +518,15 @@ class MyTheme {
         style:
             MenuStyle(backgroundColor: MaterialStatePropertyAll(Colors.white))),
     colorScheme: ColorScheme.light(
-        primary: Colors.blue, secondary: accent, background: grayBg),
+        primary: InonPalette.primaryFillLight,
+        secondary: InonPalette.accentIndicatorLight,
+        background: InonPalette.cardLight),
     popupMenuTheme: PopupMenuThemeData(
         color: Colors.white,
         shape: RoundedRectangleBorder(
           side: BorderSide(
               color: (isDesktop || isWebDesktop)
-                  ? Color(0xFFECECEC)
+                  ? InonPalette.borderLight
                   : Colors.transparent),
           borderRadius: BorderRadius.all(Radius.circular(8.0)),
         )),
@@ -471,9 +539,9 @@ class MyTheme {
   static ThemeData darkTheme = ThemeData(
     useMaterial3: false,
     brightness: Brightness.dark,
-    hoverColor: Color.fromARGB(255, 45, 46, 53),
-    scaffoldBackgroundColor: Color(0xFF18191E),
-    dialogBackgroundColor: Color(0xFF18191E),
+    hoverColor: InonPalette.panelDark,
+    scaffoldBackgroundColor: InonPalette.pageDark,
+    dialogBackgroundColor: InonPalette.cardDark,
     appBarTheme: AppBarTheme(
       shadowColor: Colors.transparent,
     ),
@@ -483,14 +551,14 @@ class MyTheme {
         borderRadius: BorderRadius.circular(18.0),
         side: BorderSide(
           width: 1,
-          color: Color(0xFF24252B),
+          color: InonPalette.borderDark,
         ),
       ),
     ),
     scrollbarTheme: scrollbarThemeDark,
     inputDecorationTheme: (isDesktop || isWebDesktop)
         ? InputDecorationTheme(
-            fillColor: Color(0xFF24252B),
+            fillColor: InonPalette.panelDark,
             filled: true,
             isDense: true,
             border: OutlineInputBorder(
@@ -499,20 +567,22 @@ class MyTheme {
           )
         : null,
     textTheme: const TextTheme(
-      titleLarge: TextStyle(fontSize: 19),
-      titleSmall: TextStyle(fontSize: 14),
-      bodySmall: TextStyle(fontSize: 12, height: 1.25),
-      bodyMedium: TextStyle(fontSize: 14, height: 1.25),
+      titleLarge: TextStyle(fontSize: 19, color: InonPalette.textDark),
+      titleSmall: TextStyle(fontSize: 14, color: InonPalette.textDark),
+      bodySmall:
+          TextStyle(fontSize: 12, height: 1.25, color: InonPalette.textDark),
+      bodyMedium:
+          TextStyle(fontSize: 14, height: 1.25, color: InonPalette.textDark),
       labelLarge: TextStyle(
         fontSize: 16.0,
         fontWeight: FontWeight.bold,
         color: accent80,
       ),
     ),
-    cardColor: Color(0xFF24252B),
+    cardColor: InonPalette.cardDark,
     visualDensity: VisualDensity.adaptivePlatformDensity,
     tabBarTheme: const TabBarTheme(
-      labelColor: Colors.white70,
+      labelColor: InonPalette.textDark,
     ),
     tooltipTheme: tooltipTheme(),
     splashColor: (isDesktop || isWebDesktop) ? Colors.transparent : null,
@@ -543,7 +613,7 @@ class MyTheme {
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        backgroundColor: Color(0xFF24252B),
+        backgroundColor: InonPalette.panelDark,
         side: BorderSide(color: Colors.white12, width: 0.5),
         disabledForegroundColor: Colors.white70,
         foregroundColor: Colors.white70,
@@ -558,11 +628,12 @@ class MyTheme {
     listTileTheme: listTileTheme,
     menuBarTheme: MenuBarThemeData(
         style: MenuStyle(
-            backgroundColor: MaterialStatePropertyAll(Color(0xFF121212)))),
+            backgroundColor:
+                MaterialStatePropertyAll(InonPalette.titlebarDark))),
     colorScheme: ColorScheme.dark(
-      primary: Colors.blue,
-      secondary: accent,
-      background: Color(0xFF24252B),
+      primary: InonPalette.primaryFillDark,
+      secondary: InonPalette.accentIndicatorDark,
+      background: InonPalette.cardDark,
     ),
     popupMenuTheme: PopupMenuThemeData(
         shape: RoundedRectangleBorder(
@@ -1412,6 +1483,18 @@ Color str2color(String str, [alpha = 0xFF]) {
   hash = hash % 16777216;
   return Color((hash & 0xFF7FFF) | (alpha << 24));
 }
+
+int _avatarIndex(String key) {
+  var h = 0;
+  for (final c in key.codeUnits) {
+    h = (h * 31 + c) & 0x7fffffff;
+  }
+  return h % InonPalette.avatars.length;
+}
+
+Color avatarColor(String key) => InonPalette.avatars[_avatarIndex(key)];
+
+Color avatarTextColor(String key) => InonPalette.avatarText[_avatarIndex(key)];
 
 Color str2color2(String str, {List<int> existing = const []}) {
   Map<String, Color> colorMap = {

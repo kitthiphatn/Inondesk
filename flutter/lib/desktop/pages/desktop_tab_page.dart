@@ -93,9 +93,10 @@ class _DesktopTabPageState extends State<DesktopTabPage> {
   Widget build(BuildContext context) {
     final tabWidget = Container(
         child: Scaffold(
-            backgroundColor: Theme.of(context).colorScheme.background,
+            backgroundColor: MyTheme.color(context).titlebar,
             body: DesktopTab(
               controller: tabController,
+              selectedBorderColor: MyTheme.color(context).accent,
               tail: Offstage(
                 offstage: bind.isIncomingOnly() || bind.isDisableSettings(),
                 child: ActionIcon(

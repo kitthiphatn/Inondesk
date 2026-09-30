@@ -329,8 +329,8 @@ class _ToolbarTheme {
   static Color inactiveColor = Colors.grey[800]!;
   static Color hoverInactiveColor = Colors.grey[850]!;
 
-  static const Color redColor = Colors.redAccent;
-  static const Color hoverRedColor = Colors.red;
+  static const Color redColor = InonSemantic.dangerFill;
+  static const Color hoverRedColor = InonSemantic.dangerFillHover;
   // kMinInteractiveDimension
   static const double height = 20.0;
   static const double dividerHeight = 12.0;

@@ -131,7 +131,7 @@ class _ConnectionTabPageState extends State<ConnectionTabPage> {
   @override
   Widget build(BuildContext context) {
     final child = Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: MyTheme.color(context).titlebar,
       body: DesktopTab(
         controller: tabController,
         onWindowCloseButton: handleWindowCloseButton,
@@ -142,7 +142,7 @@ class _ConnectionTabPageState extends State<ConnectionTabPage> {
             const AddButton(),
           ],
         ),
-        selectedBorderColor: MyTheme.accent,
+        selectedBorderColor: MyTheme.color(context).accent,
         pageViewBuilder: (pageView) => pageView,
         labelGetter: DesktopTab.tablabelGetter,
         tabBuilder: (key, icon, label, themeConf) => Obx(() {
@@ -597,9 +597,10 @@ class _RelativeMouseModeHint extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         margin: const EdgeInsets.only(right: 8),
         decoration: BoxDecoration(
-          color: Colors.orange.withOpacity(0.2),
+          color: MyTheme.color(context).warning!.withOpacity(0.15),
           borderRadius: BorderRadius.circular(4),
-          border: Border.all(color: Colors.orange.withOpacity(0.5)),
+          border: Border.all(
+              color: MyTheme.color(context).warning!.withOpacity(0.5)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -607,7 +608,7 @@ class _RelativeMouseModeHint extends StatelessWidget {
             Icon(
               Icons.mouse,
               size: 14,
-              color: Colors.orange[700],
+              color: MyTheme.color(context).warning,
             ),
             const SizedBox(width: 4),
             Text(
@@ -615,7 +616,7 @@ class _RelativeMouseModeHint extends StatelessWidget {
                   'rel-mouse-exit-{${isMacOS ? "Cmd+G" : "Ctrl+Alt"}}-tip'),
               style: TextStyle(
                 fontSize: 11,
-                color: Colors.orange[700],
+                color: MyTheme.color(context).warning,
               ),
             ),
           ],

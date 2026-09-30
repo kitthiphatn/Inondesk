@@ -154,7 +154,7 @@ class _PeerTabPageState extends State<PeerTabPage>
               borderRadius: BorderRadius.circular(6));
           final decoBorder = BoxDecoration(
               border: Border(
-            bottom: BorderSide(width: 2, color: color!),
+            bottom: BorderSide(width: 2, color: MyTheme.color(context).accent!),
           ));
           counter += 1;
           return ReorderableDragStartListener(

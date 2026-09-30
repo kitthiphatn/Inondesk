@@ -145,7 +145,7 @@ class _PeerCardState extends State<_PeerCard>
       children: [
         Container(
             decoration: BoxDecoration(
-              color: str2color('${peer.id}${peer.platform}', 0x7f),
+              color: avatarColor('${peer.id}${peer.platform}'),
               borderRadius: isPortrait
                   ? BorderRadius.circular(_tileRadius)
                   : BorderRadius.only(
@@ -164,7 +164,9 @@ class _PeerCardState extends State<_PeerCard>
                   Positioned(
                     top: 1,
                     left: 1,
-                    child: Icon(Icons.key, size: 6, color: Colors.white),
+                    child: Icon(Icons.key,
+                        size: 6,
+                        color: avatarTextColor('${peer.id}${peer.platform}')),
                   ),
               ],
             )),
@@ -303,7 +305,7 @@ class _PeerCardState extends State<_PeerCard>
               children: [
                 Expanded(
                   child: Container(
-                    color: str2color('${peer.id}${peer.platform}', 0x7f),
+                    color: avatarColor('${peer.id}${peer.platform}'),
                     child: Row(
                       children: [
                         Expanded(
@@ -323,8 +325,9 @@ class _PeerCardState extends State<_PeerCard>
                                       waitDuration: const Duration(seconds: 1),
                                       child: Text(
                                         name,
-                                        style: const TextStyle(
-                                            color: Colors.white70,
+                                        style: TextStyle(
+                                            color: avatarTextColor(
+                                                '${peer.id}${peer.platform}'),
                                             fontSize: 12),
                                         textAlign: TextAlign.center,
                                         overflow: TextOverflow.ellipsis,
@@ -342,8 +345,10 @@ class _PeerCardState extends State<_PeerCard>
                                       waitDuration: const Duration(seconds: 1),
                                       child: Text(
                                         peer.note,
-                                        style: const TextStyle(
-                                            color: Colors.white38,
+                                        style: TextStyle(
+                                            color: avatarTextColor(
+                                                    '${peer.id}${peer.platform}')
+                                                .withOpacity(0.75),
                                             fontSize: 10),
                                         textAlign: TextAlign.center,
                                         overflow: TextOverflow.ellipsis,
@@ -428,7 +433,7 @@ class _PeerCardState extends State<_PeerCard>
         child: selected
             ? Icon(
                 Icons.check_box,
-                color: MyTheme.accent,
+                color: MyTheme.color(context).primary,
               )
             : Icon(Icons.check_box_outline_blank),
       );
@@ -454,7 +459,7 @@ class _PeerCardState extends State<_PeerCard>
       final icon = selected
           ? Icon(
               Icons.check_box,
-              color: MyTheme.accent,
+              color: MyTheme.color(context).primary,
             )
           : Icon(Icons.check_box_outline_blank);
       bool last = peerTabModel.isShiftDown && peer.id == peerTabModel.lastId;
@@ -462,7 +467,8 @@ class _PeerCardState extends State<_PeerCard>
       if (last) {
         return Container(
           decoration: BoxDecoration(
-              border: Border.all(color: MyTheme.accent, width: 1)),
+              border:
+                  Border.all(color: MyTheme.color(context).primary!, width: 1)),
           child: icon,
         ).marginOnly(right: right);
       } else {
@@ -852,7 +858,8 @@ abstract class BasePeerCard extends StatelessWidget {
         } else {
           if (tab.index == PeerTabIndex.ab.index) {
             BotToast.showText(
-                contentColor: Colors.red, text: translate("Failed"));
+                contentColor: InonSemantic.dangerFill,
+                text: translate("Failed"));
           }
         }
       },
@@ -1465,13 +1472,16 @@ void _rdpDialog(String id) async {
 }
 
 Widget getOnline(double rightPadding, bool online) {
-  return Tooltip(
-      message: translate(online ? 'Online' : 'Offline'),
-      waitDuration: const Duration(seconds: 1),
-      child: Padding(
-          padding: EdgeInsets.fromLTRB(0, 4, rightPadding, 4),
-          child: CircleAvatar(
-              radius: 3, backgroundColor: online ? Colors.green : kColorWarn)));
+  return Builder(builder: (context) {
+    final c = MyTheme.color(context);
+    return Tooltip(
+        message: translate(online ? 'Online' : 'Offline'),
+        waitDuration: const Duration(seconds: 1),
+        child: Padding(
+            padding: EdgeInsets.fromLTRB(0, 4, rightPadding, 4),
+            child: CircleAvatar(
+                radius: 3, backgroundColor: online ? c.success : c.warning)));
+  });
 }
 
 Widget build_more(BuildContext context, {bool invert = false}) {
